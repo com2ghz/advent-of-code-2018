@@ -5,7 +5,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 val CLAIM_PATTERN = """#(\d+) @ (\d+),(\d+): (\d+)x(\d+)""".toRegex()
-//#1 @ 335,861: 14x10
+
 fun main() {
 
     val claims = Files.readAllLines(Paths.get("resources/input/day3.txt"))
@@ -16,20 +16,28 @@ fun main() {
         fillCanvas(canvas, claim)
     }
 
+    val overlappingClaims = HashSet<Claim>()
     var overlappingInches = 0
     for (y in canvas.indices) {
         for (x in canvas[y].indices) {
-            if (canvas[y][x] > 1) {
+            if (canvas[y][x].size > 1) {
                 overlappingInches++
+                canvas[y][x].forEach {
+                    overlappingClaims.add(it)
+                }
             }
         }
     }
 
-    println(overlappingInches)
+    val nonOverlappingClaim = claims.filter { claim -> !overlappingClaims.contains(claim) }[0]
+
+    println("Overlapping inches: ${overlappingInches}")
+    println("Overlapping claims: ${overlappingClaims.size}")
+    println("ID of claim that is not been overlapping: ${nonOverlappingClaim.id}")
 
 }
 
-fun createCanvas(claims: List<Claim>): Array<Array<Int>> {
+fun createCanvas(claims: List<Claim>): Array<Array<ArrayList<Claim>>> {
     var maxWidth = 0
     var maxHeight = 0
 
@@ -41,15 +49,19 @@ fun createCanvas(claims: List<Claim>): Array<Array<Int>> {
         maxHeight = maxOf(maxHeight, height)
     }
 
-    val canvas = Array(maxHeight+1) { i -> Array(maxWidth+1) { j -> 0} }
+    val canvas = Array(maxHeight + 1) { i ->
+        Array(maxWidth + 1) { j ->
+            ArrayList<Claim>()
+        }
+    }
     return canvas
 }
 
 
-fun fillCanvas(canvas: Array<Array<Int>>, claim: Claim): Array<Array<Int>> {
-    for (y in claim.topMargin+1..(claim.topMargin + claim.height)) {
-        for (x in claim.leftMargin+1..(claim.leftMargin + claim.width)) {
-            canvas[y][x]++
+fun fillCanvas(canvas: Array<Array<ArrayList<Claim>>>, claim: Claim): Array<Array<ArrayList<Claim>>> {
+    for (y in claim.topMargin + 1..(claim.topMargin + claim.height)) {
+        for (x in claim.leftMargin + 1..(claim.leftMargin + claim.width)) {
+            canvas[y][x].add(claim)
         }
     }
 
