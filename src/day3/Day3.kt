@@ -16,47 +16,40 @@ fun main() {
         fillCanvas(canvas, claim)
     }
 
-    val overlappingClaims = ArrayList<Claim>()
+    var overlappingInches = 0
     for (y in canvas.indices) {
         for (x in canvas[y].indices) {
-            if (canvas[y][x] != null && canvas[y][x]!!.size > 1) {
-                canvas[y][x]?.forEach {
-                    overlappingClaims.add(it)
-                }
+            if (canvas[y][x] > 1) {
+                overlappingInches++
             }
         }
     }
 
-    println(overlappingClaims)
+    println(overlappingInches)
 
 }
 
-fun createCanvas(claims: List<Claim>): Array<Array<ArrayList<Claim>?>> {
+fun createCanvas(claims: List<Claim>): Array<Array<Int>> {
     var maxWidth = 0
     var maxHeight = 0
 
 
     claims.forEach { claim: Claim ->
-        val width = claim.leftMargin + claim.width + 1
-        val height = claim.topMargin + claim.topMargin + 1
+        val width = claim.leftMargin + claim.width
+        val height = claim.topMargin + claim.topMargin
         maxWidth = maxOf(maxWidth, width)
         maxHeight = maxOf(maxHeight, height)
     }
 
-    val canvas = Array(maxHeight) { i -> arrayOfNulls<ArrayList<Claim>>(maxWidth) }
+    val canvas = Array(maxHeight+1) { i -> Array(maxWidth+1) { j -> 0} }
     return canvas
 }
 
 
-fun fillCanvas(canvas: Array<Array<ArrayList<Claim>?>>, claim: Claim): Array<Array<ArrayList<Claim>?>> {
-    for (y in claim.topMargin..claim.topMargin + claim.topMargin) {
-        for (x in claim.leftMargin..claim.leftMargin + claim.width) {
-            val sector = canvas[y][x]
-            if (sector == null) {
-                canvas[y][x] = arrayListOf(claim)
-            } else {
-                canvas[y][x]?.add(claim)
-            }
+fun fillCanvas(canvas: Array<Array<Int>>, claim: Claim): Array<Array<Int>> {
+    for (y in claim.topMargin+1..(claim.topMargin + claim.height)) {
+        for (x in claim.leftMargin+1..(claim.leftMargin + claim.width)) {
+            canvas[y][x]++
         }
     }
 
