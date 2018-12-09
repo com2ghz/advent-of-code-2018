@@ -4,10 +4,9 @@ import java.lang.IllegalArgumentException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-val CLAIM_PATTERN = """#(\d+) @ (\d+),(\d+): (\d+)x(\d+)""".toRegex()
+private val CLAIM_PATTERN = """#(\d+) @ (\d+),(\d+): (\d+)x(\d+)""".toRegex()
 
 fun main() {
-
     val claims = Files.readAllLines(Paths.get("resources/input/day3.txt"))
         .map { parseClaim(it) }
 
@@ -34,13 +33,11 @@ fun main() {
     println("Overlapping inches: ${overlappingInches}")
     println("Overlapping claims: ${overlappingClaims.size}")
     println("ID of claim that is not been overlapping: ${nonOverlappingClaim.id}")
-
 }
 
 fun createCanvas(claims: List<Claim>): Array<Array<ArrayList<Claim>>> {
     var maxWidth = 0
     var maxHeight = 0
-
 
     claims.forEach { claim: Claim ->
         val width = claim.leftMargin + claim.width
@@ -57,14 +54,12 @@ fun createCanvas(claims: List<Claim>): Array<Array<ArrayList<Claim>>> {
     return canvas
 }
 
-
 fun fillCanvas(canvas: Array<Array<ArrayList<Claim>>>, claim: Claim): Array<Array<ArrayList<Claim>>> {
     for (y in claim.topMargin + 1..(claim.topMargin + claim.height)) {
         for (x in claim.leftMargin + 1..(claim.leftMargin + claim.width)) {
             canvas[y][x].add(claim)
         }
     }
-
     return canvas
 }
 
