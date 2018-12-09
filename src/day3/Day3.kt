@@ -28,7 +28,7 @@ fun main() {
         }
     }
 
-    val nonOverlappingClaim = claims.filter { claim -> !overlappingClaims.contains(claim) }[0]
+    val nonOverlappingClaim = claims.first { claim -> !overlappingClaims.contains(claim) }
 
     println("Overlapping inches: ${overlappingInches}")
     println("Overlapping claims: ${overlappingClaims.size}")
