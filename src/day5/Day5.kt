@@ -11,6 +11,16 @@ fun main() {
 
     println(result.length)
 
+    val resultMap = mutableMapOf<Char, Int>()
+    polymer.toLowerCase()
+        .toSet()
+        .forEach { letter ->
+            val result = polymer.replace(letter.toString(), "", true)
+            resultMap[letter] = check(result).length
+        }
+
+    val entry = resultMap.minBy { it.value }
+    println(entry)
 }
 
 fun check(polymer: String): String {
